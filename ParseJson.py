@@ -7,7 +7,7 @@ from config import Config
 from utils.logger import logger
 
 
-def get_holidays():
+def get_holidays(year: str):
     """
     获取节假日和补班日期。
 
@@ -16,7 +16,7 @@ def get_holidays():
     Raises:
         Exception: 如果获取数据失败，则抛出异常。
     """
-    year = datetime.datetime.now().year.__str__()
+
     primary_url = "https://www.shuyz.com/githubfiles/china-holiday-calender/master/holidayAPI.json"
     backup_url = f"https://unpkg.com/holiday-calendar@1.1.6/data/CN/{year}.json"
 
@@ -75,11 +75,13 @@ def get_holidays():
             makeup_workdays.extend(comp_days)
     else:
         for holiday in data["dates"]:
-            date = holiday["date"]
-            if holiday["type"] == "public_holiday":
-                public_holidays.append(date)
-            elif holiday["type"] == "transfer_workday":
-                makeup_workdays.append(date)
+            # Type check to ensure holiday is a dictionary
+            if isinstance(holiday, dict):
+                date = holiday["date"]
+                if holiday["type"] == "public_holiday":
+                    public_holidays.append(date)
+                elif holiday["type"] == "transfer_workday":
+                    makeup_workdays.append(date)
 
     holidays_df = pd.DataFrame(public_holidays, columns=["date"])
     makeup_workdays_df = pd.DataFrame(makeup_workdays, columns=["date"])

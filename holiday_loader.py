@@ -13,7 +13,7 @@ def ensure_year_data(year: int):
     makeup_path = os.path.join(HOLIDAY_DIR, f"makeup_workdays_{year}.csv")
     if not (os.path.exists(pub_path) and os.path.exists(makeup_path)):
         logger.info(f"{year} 年节假日数据不存在，尝试获取...")
-        get_holidays()  # get_holidays 按当前年份获取；若不同则需要适配（后续可扩展）
+        get_holidays(str(year))  # get_holidays 按当前年份获取；若不同则需要适配（后续可扩展）
     return pub_path, makeup_path
 
 
